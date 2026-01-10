@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Key Guardian</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- Top Bar: Diamond Counter and Key Counter -->
+        <div id="top-bar">
+            <div id="diamond-section">
+                <img src="assets/diamond.png" id="diamond-icon" alt="Diamond">
+                <span id="diamond-counter">0</span>
+            </div>
+            <div id="key-section">
+                <img src="assets/key.png" id="key-icon" alt="Key">
+                <span id="key-counter">0</span>
+            </div>
+        </div>
+        
+        <!-- Score Counter -->
+        <div id="score-container">
+            <span id="score-label">Score</span>
+            <span id="score-value">0</span>
+        </div>
+
+        <!-- Game Timer -->
+        <div id="game-timer-container">
+            <div id="game-timer">
+                <div id="timer-value">60</div>
+            </div>
+        </div>
+
+        <!-- Key Timer -->
+        <div id="key-timer"></div>
+
+        <!-- Vault Area -->
+        <div id="vault-area">
+            <img src="assets/vault.png" id="vault" alt="Vault" ondragover="allowDrop(event)"
+                ondrop="dropKeyOnVault(event)">
+            <img src="assets/redVault.png" id="red-vault" alt="Red Vault" ondragover="allowDrop(event)"
+                ondrop="dropKeyOnVault(event)">
+            <img src="assets/greenVault.png" id="green-vault" alt="Green Vault" ondragover="allowDrop(event)"
+                ondrop="dropKeyOnVault(event)">
+            <img src="assets/helper.png" id="helper" alt="Helper">
+            <img src="assets/thief.png" id="thief" alt="Thief">
+            <img src="assets/key.png" id="key" alt="Key">
+        </div>
+
+        <!-- Boxes Area -->
+        <div id="boxes-area">
+            <img src="assets/box.png" class="box" id="box1" alt="Treasure Box 1">
+        </div>
+
+        <!-- Controls -->
+        <div id="controls">
+            <button onclick="giveKey('full')">Full Access</button>
+            <button onclick="giveKey(5)">Just-in-Time</button>
+        </div>
+        
+        <!-- Reload Button -->
+        <button onclick="location.reload()" id="reload-btn">Reload</button>
+
+        <!-- Message Area -->
+        <div id="message"></div>
+        
+        
+        <!-- Game Over Popup -->
+        <div id="game-over-popup" style="display: none;">
+            <div id="popup-content">
+                <h2>Game Over</h2>
+                <p>Time's up! Would you like to play again?</p>
+                <p id="final-score">Final Score: <span id="score-display">0</span> points</p>
+                <div id="popup-buttons">
+                    <button id="play-again-btn" onclick="playAgain()">Play Again</button>
+                    <button id="cancel-btn" onclick="closePopup()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Logic -->
+    <script src="game.js"></script>
+
+    <!-- Audio Elements -->
+    <audio id="sound-box-open" preload="auto">
+        <source src="assets/sounds/box_open.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-alarm" preload="auto" loop>
+        <source src="assets/sounds/alarm.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-key" preload="auto">
+        <source src="assets/sounds/key.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-key-saved" preload="auto">
+        <source src="assets/sounds/keySaved.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-footsteps" preload="auto" loop>
+        <source src="assets/sounds/footsteps.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-heartbeat" preload="auto" loop>
+        <source src="assets/sounds/heartbeat.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-fail" preload="auto">
+        <source src="assets/sounds/fail.mp3" type="audio/mpeg">
+    </audio>
+</body>
+
+</html>

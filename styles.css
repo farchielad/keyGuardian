@@ -1,0 +1,716 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    background-attachment: fixed;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Game container */
+#game-container {
+    position: relative;
+    width: 1400px;
+    height: 700px;
+    background: url('assets/background.png') no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* Top bar */
+#top-bar {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    z-index: 30;
+}
+
+/* Diamond section */
+#diamond-section {
+    display: flex;
+    align-items: center;
+}
+
+/* Diamond icon */
+#diamond-icon {
+    height: 36px;
+    width: auto;
+    margin-right: 8px;
+}
+
+#diamond-counter {
+    color: white;
+}
+
+/* Key section */
+#key-section {
+    display: flex;
+    align-items: center;
+}
+
+/* Key icon */
+#key-icon {
+    height: 36px;
+    width: auto;
+    margin-right: 8px;
+}
+
+#key-counter {
+    color: white;
+    transition: transform 0.2s ease-out;
+}
+
+/* Score Container */
+#score-container {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 
+        0 0 15px #FFD700,
+        0 0 25px #FFA500,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 30;
+    font-family: 'Arial Black', Arial, sans-serif;
+    letter-spacing: 2px;
+    animation: scoreGlow 2s ease-in-out infinite;
+}
+
+@keyframes scoreGlow {
+    0%, 100% {
+        text-shadow: 
+            0 0 15px #FFD700,
+            0 0 25px #FFA500,
+            2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+    50% {
+        text-shadow: 
+            0 0 20px #FFD700,
+            0 0 35px #FFA500,
+            0 0 45px #FF8C00,
+            2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+}
+
+#score-label {
+    font-size: 28px;
+    opacity: 0.9;
+}
+
+#score-value {
+    font-size: 36px;
+    min-width: 80px;
+    text-align: center;
+    transition: transform 0.3s ease-out;
+}
+
+#score-value.score-update {
+    transform: scale(1.2);
+}
+
+/* Game Timer Container */
+#game-timer-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 30;
+}
+
+/* Game Timer - Medieval Castle Theme */
+#game-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+    border: 3px solid #FFD700;
+    border-radius: 12px;
+    box-shadow: 
+        0 0 15px rgba(255, 215, 0, 0.6),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+    animation: timerPulse 2s ease-in-out infinite;
+    font-family: 'Arial Black', Arial, sans-serif;
+    height: 50px;
+    min-width: 90px;
+}
+
+#timer-value {
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 
+        0 0 10px #FFD700,
+        0 0 20px #FFA500,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    min-width: 50px;
+    text-align: center;
+    animation: timerNumberGlow 1s ease-in-out infinite;
+    line-height: 1;
+}
+
+/* Timer warning state (20-10 seconds) */
+#game-timer.timer-warning {
+    border-color: #FFA500;
+    box-shadow: 
+        0 0 20px rgba(255, 165, 0, 0.8),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+    animation: timerPulseWarning 1s ease-in-out infinite;
+}
+
+#game-timer.timer-warning #timer-value {
+    color: #FFA500;
+    text-shadow: 
+        0 0 15px #FFA500,
+        0 0 25px #FF8C00,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: timerNumberGlowWarning 0.5s ease-in-out infinite;
+}
+
+/* Timer critical state (10-0 seconds) */
+#game-timer.timer-critical {
+    border-color: #FF4500;
+    background: linear-gradient(135deg, #8B0000 0%, #A0522D 50%, #8B0000 100%);
+    box-shadow: 
+        0 0 25px rgba(255, 69, 0, 1),
+        0 0 40px rgba(255, 0, 0, 0.6),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+    animation: timerPulseCritical 0.5s ease-in-out infinite;
+}
+
+#game-timer.timer-critical #timer-value {
+    color: #FF4500;
+    text-shadow: 
+        0 0 20px #FF4500,
+        0 0 30px #FF0000,
+        0 0 40px #FF6347,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: timerNumberGlowCritical 0.3s ease-in-out infinite;
+}
+
+/* Timer expired state */
+#game-timer.timer-expired {
+    border-color: #8B0000;
+    background: linear-gradient(135deg, #4B0000 0%, #8B0000 50%, #4B0000 100%);
+    box-shadow: 
+        0 0 30px rgba(139, 0, 0, 1),
+        inset 0 2px 5px rgba(255, 255, 255, 0.2);
+    animation: timerExpiredShake 0.2s ease-in-out infinite;
+}
+
+#game-timer.timer-expired #timer-value {
+    color: #8B0000;
+    text-shadow: 
+        0 0 15px #8B0000,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Animations */
+@keyframes timerPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes timerPulseWarning {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+@keyframes timerPulseCritical {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.12);
+    }
+}
+
+@keyframes timerExpiredShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-3px);
+    }
+    75% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes timerNumberGlow {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.9;
+    }
+}
+
+@keyframes timerNumberGlowWarning {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.95;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes timerNumberGlowCritical {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.1);
+    }
+}
+
+/* Red Vault */
+#red-vault {
+    position: absolute;
+    left: 325px; /* Moved 10px to the right to be closer to green vault */
+    top: 263px;
+    width: 193px;
+    z-index: 5;
+    transition: transform 0.2s ease;
+}
+
+#red-vault.vault-pulse {
+    animation: vaultPulse 0.8s ease;
+}
+
+/* Green Vault */
+#green-vault {
+    position: absolute;
+    left: 508px;
+    top: 263px;
+    width: 193px;
+    z-index: 5;
+    transition: transform 0.2s ease;
+}
+
+#green-vault.vault-pulse {
+    animation: vaultPulse 0.8s ease;
+}
+
+/* Vault */
+#vault {
+    position: absolute;
+    left: 691px; /* Moved 10px to the left to be closer to green vault */
+    top: 263px;
+    width: 193px;
+    z-index: 5;
+    transition: transform 0.2s ease;
+}
+
+#vault.vault-pulse {
+    animation: vaultPulse 0.8s ease;
+}
+
+@keyframes vaultPulse {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.15);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    75% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Wrong vault animation - shake and red flash */
+#vault.vault-wrong,
+#red-vault.vault-wrong,
+#green-vault.vault-wrong {
+    animation: vaultWrong 0.6s ease;
+}
+
+@keyframes vaultWrong {
+    0% {
+        transform: translateX(0) scale(1);
+        filter: brightness(1);
+    }
+    10% {
+        transform: translateX(-10px) scale(1);
+        filter: brightness(1.2) hue-rotate(0deg);
+    }
+    20% {
+        transform: translateX(10px) scale(1);
+        filter: brightness(1.3) hue-rotate(10deg);
+    }
+    30% {
+        transform: translateX(-8px) scale(1.05);
+        filter: brightness(1.25) hue-rotate(-10deg);
+    }
+    40% {
+        transform: translateX(8px) scale(1.05);
+        filter: brightness(1.3) hue-rotate(10deg);
+    }
+    50% {
+        transform: translateX(-5px) scale(1);
+        filter: brightness(1.2) hue-rotate(0deg);
+    }
+    60% {
+        transform: translateX(5px) scale(1);
+        filter: brightness(1.15) hue-rotate(5deg);
+    }
+    70% {
+        transform: translateX(-3px) scale(1);
+        filter: brightness(1.1) hue-rotate(-5deg);
+    }
+    80% {
+        transform: translateX(3px) scale(1);
+        filter: brightness(1.05) hue-rotate(0deg);
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* Helper — initial position 20px from left */
+#helper {
+    position: absolute;
+    left: 53px;
+    top: 245px;
+    width: 350px;
+    z-index: 10;
+}
+
+/* Thief */
+#thief {
+    position: absolute;
+    width: 290px;
+    display: none;
+    z-index: 15;
+}
+
+/* Key — 2× bigger */
+#key {
+    position: absolute;
+    width: 140px;
+    display: none;
+    z-index: 50;
+    cursor: grab;
+}
+
+#key:active {
+    cursor: grabbing;
+}
+
+/* Box / boxOpen */
+#box1 {
+    position: absolute;
+    left: 1050px;
+    top: 315px;
+    width: 193px;
+    z-index: 5;
+}
+
+/* Controls */
+#controls {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+}
+
+/* Reload Button */
+#reload-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 20;
+    padding: 14px 22px;
+    font-size: 22px;
+    border: 3px solid #b8860b;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #ffd700, #daa520);
+    color: #fff8dc;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #6b4c00;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s;
+}
+
+#reload-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Key Timer - Countdown when key is lost */
+#key-timer {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 120px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.6),
+        0 0 60px rgba(255, 255, 255, 0.4),
+        2px 2px 8px rgba(0, 0, 0, 0.9);
+    z-index: 40;
+    font-family: 'Arial Black', Arial, sans-serif;
+    letter-spacing: 8px;
+    animation: keyTimerPulse 0.5s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+@keyframes keyTimerPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.9;
+    }
+}
+
+@keyframes keyTimerFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+#key-timer.show {
+    animation: keyTimerFadeIn 0.4s ease-out, keyTimerPulse 0.5s ease-in-out infinite 0.4s;
+}
+
+#controls button {
+    padding: 14px 22px;
+    margin-right: 8px;
+    font-size: 22px;
+    border: 3px solid #b8860b;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #ffd700, #daa520);
+    color: #fff8dc;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #6b4c00;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s;
+}
+
+#controls button:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+
+#controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.3);
+}
+
+/* Game Over Popup */
+#game-over-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+#popup-content {
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+    border: 4px solid #FFD700;
+    border-radius: 20px;
+    padding: 40px 50px;
+    text-align: center;
+    box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.8),
+        inset 0 2px 10px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 10px rgba(0, 0, 0, 0.3);
+    min-width: 400px;
+    animation: popupAppear 0.3s ease-out;
+}
+
+@keyframes popupAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#popup-content h2 {
+    color: #FFD700;
+    font-size: 42px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+    text-shadow: 
+        0 0 15px #FFD700,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Arial Black', Arial, sans-serif;
+}
+
+#popup-content p {
+    color: #FFF8DC;
+    font-size: 24px;
+    margin: 0 0 15px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+#final-score {
+    color: #FFD700 !important;
+    font-size: 28px !important;
+    font-weight: bold;
+    margin: 10px 0 30px 0 !important;
+    text-shadow: 
+        0 0 10px #FFD700,
+        2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+#score-display {
+    color: #FFA500;
+    font-size: 32px;
+}
+
+#popup-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+#popup-buttons button {
+    padding: 16px 32px;
+    font-size: 22px;
+    font-weight: bold;
+    border: 3px solid #FFD700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Arial Black', Arial, sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    min-width: 150px;
+}
+
+#play-again-btn {
+    background: linear-gradient(to bottom, #FFD700, #DAA520);
+    color: #8B4513;
+    box-shadow: 
+        0 0 15px rgba(255, 215, 0, 0.6),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#play-again-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.9),
+        inset 0 2px 5px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.4);
+}
+
+#play-again-btn:active {
+    transform: scale(0.95);
+}
+
+#cancel-btn {
+    background: linear-gradient(to bottom, #8B4513, #654321);
+    color: #FFD700;
+    box-shadow: 
+        0 0 15px rgba(139, 69, 19, 0.6),
+        inset 0 2px 5px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#cancel-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 0 20px rgba(139, 69, 19, 0.9),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.4);
+}
+
+#cancel-btn:active {
+    transform: scale(0.95);
+}
+
+/* Message */
+#message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    font-weight: bold;
+    color: #ffeb3b;
+    z-index: 50;
+    text-align: center;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+/* Show message animation */
+.show-message {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+    transition: all 0.5s ease;
+}
+
+
