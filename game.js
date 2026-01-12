@@ -1,4 +1,5 @@
 const helper = document.getElementById('helper');
+const animatedHelper = document.getElementById('animated-helper');
 const thief = document.getElementById('thief');
 const keyImg = document.getElementById('key');
 const diamondCounter = document.getElementById('diamond-counter');
@@ -67,13 +68,28 @@ function giveKey(accessType) {
     if (accessType === 'full') keyLossProbability = 0.65;
     if (accessType === 5) keyLossProbability = 0.65;
 
-    const helperTargetX = boxPosition.x + box1.offsetWidth / 2 - helper.offsetWidth / 2;
+    // Calculate target position for the box (stop 150px earlier to avoid being too close to right edge)
+    const helperTargetX = boxPosition.x + box1.offsetWidth / 2 - animatedHelper.offsetWidth / 2 - 150;
     const helperTargetY = boxPosition.y + 30;
 
-    helper.style.display = 'block';
-    helper.style.transition = `all ${duration}s linear`;
-    helper.style.left = helperTargetX + 'px';
-    helper.style.top = helperTargetY + 'px';
+    // Hide static helper, show animated helper when moving
+    // Set animated helper to start at its designated initial position
+    helper.style.display = 'none';
+    animatedHelper.style.display = 'block';
+    animatedHelper.style.transition = 'none'; // No transition for initial positioning
+    
+    // Use requestAnimationFrame to ensure position is set after display change
+    requestAnimationFrame(() => {
+        animatedHelper.style.left = '233px'; // Animated helper's initial position (233px from left)
+        animatedHelper.style.top = '325px'; // Animated helper's initial position (325px from top)
+        
+        // After setting initial position, enable transition and move to target
+        requestAnimationFrame(() => {
+            animatedHelper.style.transition = `all ${duration}s linear`;
+            animatedHelper.style.left = helperTargetX + 'px';
+            animatedHelper.style.top = helperTargetY + 'px';
+        });
+    });
 
     // Start footsteps sound
     const footstepsSound = document.getElementById('sound-footsteps');
@@ -95,6 +111,9 @@ function giveKey(accessType) {
                 footstepsSound.pause();
                 footstepsSound.currentTime = 0;
             }
+            // Hide animated helper, show static helper when stopped
+            animatedHelper.style.display = 'none';
+            helper.style.display = 'block';
             openBox();
             resetHelper();
             keyInUse = false;
@@ -130,10 +149,15 @@ function dropKey(countdownTime) {
         });
     }
     
-    const keyX = helper.offsetLeft + helper.offsetWidth / 2 - 40;
-    const keyY = helper.offsetTop + helper.offsetHeight / 2;
+    // Use whichever helper is currently visible
+    const currentHelper = animatedHelper.style.display === 'block' ? animatedHelper : helper;
+    const keyX = currentHelper.offsetLeft + currentHelper.offsetWidth / 2 - 40;
+    const keyY = currentHelper.offsetTop + currentHelper.offsetHeight / 2;
 
     helper.style.display = 'none';
+    animatedHelper.style.display = 'none';
+    // Switch back to static image when key drops
+    helper.src = 'assets/helper.png';
 
     // Use the key image that was chosen when the button was clicked
     keyImg.src = currentKeyImage;
@@ -191,6 +215,13 @@ function dropKey(countdownTime) {
             if (heartbeatSound) {
                 heartbeatSound.pause();
                 heartbeatSound.currentTime = 0;
+            }
+            
+            // Stop background music
+            const backgroundMusic = document.getElementById('sound-background-music');
+            if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
             }
             
             // Show GAME OVER in counter
@@ -449,6 +480,11 @@ function resetHelper() {
         footstepsSound.pause();
         footstepsSound.currentTime = 0;
     }
+    // Hide animated helper, show static helper when reset
+    animatedHelper.style.display = 'none';
+    animatedHelper.style.transition = 'none'; // Reset transition
+    animatedHelper.style.left = '383px'; // Animated helper's initial position (383px from left)
+    animatedHelper.style.top = '325px'; // Animated helper's initial position (325px from top)
     helper.style.transition = 'all 0.5s linear';
     helper.style.left = initialHelperLeft + 'px';
     helper.style.top = initialHelperTop + 'px';
@@ -469,14 +505,47 @@ function startGameTimer() {
         heartbeatSound.currentTime = 0;
     }
     
+    // Stop background music if playing
+    const backgroundMusic = document.getElementById('sound-background-music');
+    if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+    }
+    
     gameTimeLeft = 60;
     timerValue.textContent = gameTimeLeft;
     gameTimer.classList.remove('timer-warning', 'timer-critical', 'timer-expired');
+    
+    // Try to start background music immediately (will be 59 on first tick)
+    if (backgroundMusic) {
+        console.log('Background music element found, attempting to play...');
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.5; // Set volume to 50%
+        // Try to play, but don't fail if autoplay is blocked
+        backgroundMusic.play().then(() => {
+            console.log('Background music started successfully');
+        }).catch(err => {
+            console.log('Background music autoplay blocked, will try again on first tick:', err);
+        });
+    } else {
+        console.error('Background music element not found!');
+    }
     
     // Start the timer automatically
     gameTimerInterval = setInterval(() => {
         gameTimeLeft--;
         timerValue.textContent = gameTimeLeft;
+        
+        // Start background music when timer is between 59 and 1 (if not already playing)
+        if (gameTimeLeft >= 1 && gameTimeLeft <= 59) {
+            if (backgroundMusic && backgroundMusic.paused) {
+                backgroundMusic.loop = true;
+                backgroundMusic.volume = 0.5; // Set volume to 50%
+                backgroundMusic.play().catch(err => {
+                    console.error('Background music failed to play:', err);
+                });
+            }
+        }
         
         // Add visual warnings as time runs out
         if (gameTimeLeft <= 10) {
@@ -509,6 +578,13 @@ function startGameTimer() {
             if (heartbeatSound) {
                 heartbeatSound.pause();
                 heartbeatSound.currentTime = 0;
+            }
+            
+            // Stop background music
+            const backgroundMusic = document.getElementById('sound-background-music');
+            if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
             }
             
             // Show game over popup
@@ -555,6 +631,13 @@ function resetGameTimer() {
     if (heartbeatSound) {
         heartbeatSound.pause();
         heartbeatSound.currentTime = 0;
+    }
+    
+    // Stop background music
+    const backgroundMusic = document.getElementById('sound-background-music');
+    if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
     }
     
     startGameTimer();
@@ -697,5 +780,14 @@ function playAgain() {
 }
 
 // Initialize and start timer when page loads
-startGameTimer();
-enableGameButtons();
+// Wait for DOM to be fully loaded before accessing audio elements
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        startGameTimer();
+        enableGameButtons();
+    });
+} else {
+    // DOM is already loaded
+    startGameTimer();
+    enableGameButtons();
+}
