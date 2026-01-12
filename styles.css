@@ -416,9 +416,17 @@ body {
 /* Helper — initial position 20px from left */
 #helper {
     position: absolute;
-    left: 53px;
-    top: 245px;
-    width: 350px;
+    left: 63px; /* 53px + 10px = 63px */
+    top: 275px; /* 245px + 30px = 275px */
+    width: 319px; /* 456px * 0.7 = 319.2px (30% smaller) */
+    z-index: 10;
+}
+
+#animated-helper {
+    position: absolute;
+    left: 233px; /* 383px - 150px = 233px */
+    top: 325px; /* 265px + 60px = 325px */
+    width: 129px; /* 152px * 0.85 = 129.2px (15% smaller) */
     z-index: 10;
 }
 
